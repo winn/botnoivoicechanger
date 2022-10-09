@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+.button2 {background-color: #f44336;} /* Red */ 
+</style>
+</head>
+
+
+<body>
+
+<h2>BOTNOI Voice Changer</h2>
+
+<p>ประโยคที่จะให้อ่าน</p>
+
+<p id="demo"></p>
+
+<!-- <input type="text" id="myText" value="ทดสอบ" onchange="testvoice()"><br><br> -->
+
+<textarea id="myText" rows="10" cols="67"></textarea><br><br>
+
+<!-- <input type="text" onchange="myFunction()"> -->
+
+<label for="fname">Botnoi-Token:</label>
+<input type="text" id="token" name="token" size="67"><br><br>
+<form>
+  <label for="cars">Choose voice</label>
+  <select name="voicelist" id="voicelist">
+    <option value="1">เอวา</option>
+    <option value="2">โบ</option>
+    <option value="3">คุณงาม</option>
+    <option value="4">แม็กซ์</option>
+  </select>
+  <br><br>
+</form>
+
+<audio controls autoplay id="displayvoice">
+  <source  src="https://botnoi-voice.s3.amazonaws.com:443/audio/3d61b5655c246bee979245629fd03892b8e314addd48c4bd07d1f416978a8e93_1_20221005120755067877.m4a" type="audio/ogg" >
+Your browser does not support the audio element.
+</audio>
+
+
+<div id="div_start">
+  <button class="button" id="start_button" onclick="startButton(event)">ฟัง</button>
+  <button class="button button2" id="stop_button" onclick="stopButton(event)">อ่าน</button>
+</div>
+
+
+  
+</div>
+
+<div id="results">
+   <span class="interim" id="interim_span"></span>
+</div>
+
+<script>
+
+async function testvoice(){
+  var myText = document.getElementById("myText").value;
+  var voiceId = document.getElementById("voicelist").value;
+  var token = document.getElementById("token").value;
+  const response = await fetch("https://voice.botnoi.ai/api/service/generate_audio", {
+  method: 'POST',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Botnoi-Token': token
+  },
+  body: JSON.stringify({"text":myText, "speaker":voiceId, "volume":1, "speed":1, "type_media":"m4a"}),
+  });
+
+  response.json().then(data => {
+    console.log(data.audio_url);
+    document.getElementById('displayvoice').src = data.audio_url;
+    // document.getElementById("demo").innerHTML = data.audio_url;
+  });
+
+}
+
+</script>
+
+
+<script>
+
+var final_transcript = '';
+var recognizing = false;
+var ignore_onend;
+var start_timestamp;
+if (!('webkitSpeechRecognition' in window)) {
+  upgrade();
+} else {
+  start_button.style.display = 'inline-block';
+  var recognition = new webkitSpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onstart = function() {
+    recognizing = true;
+  };
+
+  recognition.onend = function() {
+    recognizing = false;
+    if (ignore_onend) {
+      return;
+    }
+    //start_img.src = '/intl/en/chrome/assets/common/images/content/mic.gif';
+    
+  };
+
+  recognition.onresult = function(event) {
+    var interim_transcript = '';
+    if (typeof(event.results) == 'undefined') {
+      recognition.onend = null;
+      recognition.stop();
+      upgrade();
+      return;
+    }
+    for (var i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        final_transcript += event.results[i][0].transcript;
+      } else {
+        interim_transcript += event.results[i][0].transcript;
+      }
+    }
+    // final_transcript = capitalize(final_transcript);
+    // final_span.innerHTML = final_transcript;
+    interim_span.innerHTML = interim_transcript;
+    myText.value = final_transcript;
+
+    
+
+  };
+
+
+
+}
+
+function startButton(event) {
+  if (recognizing) {
+    recognition.stop();
+    return;
+  }
+  final_transcript = '';
+  recognition.lang = 'th-TH';
+  recognition.start();
+  interim_span.innerHTML = '';
+  start_timestamp = event.timeStamp;
+}
+
+function stopButton(event) {
+  if (recognizing) {
+    recognition.stop();
+  }
+  recognition.stop();
+  testvoice()
+
+}
+
+
+    </script>
+
+
+
+</body>
+</html>
