@@ -1,1 +1,39 @@
-<p>main works!</p>
+<h2>BOTNOI Voice Changer</h2>
+
+<p>ประโยคที่จะให้อ่าน</p>
+
+<p id="demo"></p>
+
+<textarea id="myText" rows="10" cols="67">{{ voiceRecognitionService.text }}</textarea><br><br>
+
+<label for="token">Botnoi-Token:</label>
+<input type="text" id="token" name="token" size="67"><br><br>
+
+<form>
+    <label for="voice">Choose voice</label>
+    <select name="voicelist" id="voicelist">
+        <option value="1">เอวา</option>
+        <option value="2">โบ</option>
+        <option value="3">คุณงาม</option>
+        <option value="4">แม็กซ์</option>
+    </select>
+    <br><br>
+</form>
+
+<audio controls autoplay id="displayvoice">
+    <source
+        src="https://botnoi-dictionary.s3.amazonaws.com:443/3d61b5655c246bee979245629fd03892b8e314addd48c4bd07d1f416978a8e93_10092022153303962485.mp3"
+        type="audio/ogg"
+    >
+    Your browser does not support the audio element.
+</audio>
+
+
+<div id="div_start">
+    <button class="button" id="start_button" (click)="startButton()">ฟัง</button>
+    <button class="button button2" id="stop_button" (click)="stopButton()">อ่าน</button>
+</div>
+
+<div id="results">
+    <span class="interim" id="interim_span">{{ voiceRecognitionService.interim_span }}</span>
+</div>
