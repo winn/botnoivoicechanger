@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { VoiceRecognitionService } from '../service/voice-recognition.service'
+import { VoiceRecognitionService } from '../services/voice-recognition.service'
 
 @Component({
   selector: 'app-main',

@@ -1,1 +1,4 @@
-<p>line-login works!</p>
+<button class="lineLogin" (click)="lineLogin()" *ngIf="!isLogin">
+    เข้าสู้ระบบด้วย LINE
+</button>
+<div *ngIf="isLogin">Token = {{ token }}</div>
