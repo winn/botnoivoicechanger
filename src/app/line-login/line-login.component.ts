@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import liff from '@line/liff/dist/lib';
+import { AuthService } from '../services/auth.service';
+import { TextspeechService } from '../services/textspeech.service';
 
 @Component({
   selector: 'app-line-login',
@@ -10,62 +9,30 @@ import liff from '@line/liff/dist/lib';
 })
 export class LineLoginComponent implements OnInit {
 
-  liff_id = '1656375389-3Low4Q1G';
-  userRes: any;
-  tokenRes: any;
-  user: any;
-  jwt: any;
   token: any;
-  isLogin!: boolean;
+  isLoggedIn: any;
+  credentials: any;
 
   constructor(
-    private http: HttpClient, 
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.isLogin = false; 
+    private _tts: TextspeechService,
+    private _auth: AuthService
+  ) {
+    this.isLoggedIn = false;
   }
 
-  async lineLogin() {
-    await liff
-      .init({
-        liffId: this.liff_id,
-        withLoginOnExternalBrowser: true,
-      })
-      .catch((err) => {
-        console.log('Detected liff caches');
-        console.log('Clearing liff data caches... ');
-        localStorage.removeItem('LIFF_STORE');
-        liff.logout();
+  ngOnInit(): void { }
+
+  lineSignIn(){
+    this.token = this._auth.lineLogin();
+    if(this.token) {
+      this.isLoggedIn = true;
+      this._auth.setToken(this.token);
+      this._tts.checkToken().subscribe((res: any) => {
+        if (res.status == 200) {
+          const token: string = res.data[0].token;
+          this.credentials = token.replace('Bearer ', '');
+        }
       });
-    if (liff.isLoggedIn()) {
-      this.isLogin = true;
-      this.user = liff.getDecodedIDToken()
-      console.log(this.user)
-      this.liff();
     }
-  }
-
-  async liff() {
-    await this.jwt
-    this.http
-      .post('https://staging-text2speech.botnoi.ai/api/dashboard/liff_changer', this.user)
-      .subscribe((res) => {
-        this.userRes = res;
-        this.jwt = this.userRes.response.jwt;
-        console.log(this.jwt);
-        this.getToken();
-      });
-  }
-
-  getToken() {
-    this.http
-      .post('https://staging-text2speech.botnoi.ai/api/service/get_token', {}, { headers: { Authorization: 'Bearer ' + this.jwt } })
-      .subscribe((res) => {
-        this.tokenRes = res;
-        this.token = this.tokenRes.data[0].token;
-        console.log(this.token);
-      });
   }
 }

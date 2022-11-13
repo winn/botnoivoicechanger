@@ -1,4 +1,4 @@
-<button class="lineLogin" (click)="lineLogin()" *ngIf="!isLogin">
+<button class="lineLogin" (click)="lineSignIn()" *ngIf="!isLoggedIn">
     เข้าสู้ระบบด้วย LINE
 </button>
-<div *ngIf="isLogin">Token = {{ token }}</div>
+<div *ngIf="isLoggedIn">Credential = {{ credentials }}</div>

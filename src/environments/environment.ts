@@ -6,6 +6,10 @@ export const environment = {
   production: false
 };
 
+export const webapi = 'https://staging-text2speech.botnoi.ai/api';
+
+export const liff_id = '1656375389-3Low4Q1G';
+
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
