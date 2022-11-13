@@ -22,6 +22,11 @@ export class TextspeechService {
     return header
   }
 
+  liff(user: any) {
+    const url = webapi + '/dashboard/liff_changer';
+    return this.http.post(url, user);
+  }
+
   checkToken() {
     const header = this.getHeader()
     const url = webapi + '/service/get_token';

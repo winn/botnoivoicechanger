@@ -9,6 +9,19 @@ import { TextspeechService } from '../services/textspeech.service';
 })
 export class LineLoginComponent implements OnInit {
 
+  user = {
+    "iss": "https://access.line.me",
+    "sub": "U9e2f277a8c6ff6d7e88b2b023fcbe274",
+    "aud": "1656100492",
+    "exp": 1668368413,
+    "iat": 1668364813,
+    "amr": [
+        "linesso"
+    ],
+    "name": "Pitcha",
+    "picture": "https://profile.line-scdn.net/0hYgbZtJWRBkhfIxKrDDF5H2NmCCUoDQAAJxFPLHwgWX90GhRNahIeK39zXyh3FxYca0dLJigiW3En",
+    "email": "pitcha_2149@hotmail.com"
+}
   token: any;
   isLoggedIn: any;
   credentials: any;
@@ -23,16 +36,28 @@ export class LineLoginComponent implements OnInit {
   ngOnInit(): void { }
 
   lineSignIn(){
-    this.token = this._auth.lineLogin();
-    if(this.token) {
-      this.isLoggedIn = true;
-      this._auth.setToken(this.token);
-      this._tts.checkToken().subscribe((res: any) => {
-        if (res.status == 200) {
-          const token: string = res.data[0].token;
-          this.credentials = token.replace('Bearer ', '');
-        }
-      });
-    }
+    // this._auth.lineLogin();
+    this.getToken();
+  }
+
+  getToken() {
+    this.isLoggedIn = true;
+    // const user = this._auth.getLiffUser;
+    this._tts.liff(this.user).subscribe((res: any) => {
+      if (res.status == 200) {
+        const token: string = res.response.jwt;
+        this._auth.setToken(token);
+        this.getCredentials();
+      }
+    });
+  }
+
+  getCredentials() {
+    this._tts.checkToken().subscribe((res: any) => {
+      if (res.status == 200) {
+        const token: string = res.data[0].token;
+        this.credentials = token.replace('Bearer ', '');
+      }
+    });
   }
 }

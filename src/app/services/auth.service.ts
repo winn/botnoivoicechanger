@@ -3,14 +3,17 @@ import { Router } from '@angular/router';
 import liff from '@line/liff/dist/lib';
 import { GlobalFunctionService } from './global-function.service';
 import { liff_id } from 'src/environments/environment';
+import { getDecodedIDToken } from '@liff/store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   
+  liffUser: any;
+  
   constructor(
-    private router: Router,
+    private router: Router, 
     private _gfunc: GlobalFunctionService
   ) {}
 
@@ -27,8 +30,13 @@ export class AuthService {
         liff.logout();
       });
     if (liff.isLoggedIn()) {
-      return liff.getDecodedIDToken();
+      this.liffUser = liff.getDecodedIDToken;
+      return this.router.navigate(['/']);
     }
+  }
+
+  getLiffUser() {
+    return this.liffUser;
   }
 
   setToken(token: any) {
@@ -36,6 +44,6 @@ export class AuthService {
   }
 
   getToken() {
-    return sessionStorage.getItem("token");
+    return sessionStorage.getItem('token');
   }
 }
