@@ -22,16 +22,11 @@ export class LineLoginComponent implements OnInit {
     "picture": "https://profile.line-scdn.net/0hYgbZtJWRBkhfIxKrDDF5H2NmCCUoDQAAJxFPLHwgWX90GhRNahIeK39zXyh3FxYca0dLJigiW3En",
     "email": "pitcha_2149@hotmail.com"
 }
-  token: any;
-  isLoggedIn: any;
-  credentials: any;
 
   constructor(
     private _tts: TextspeechService,
     private _auth: AuthService
-  ) {
-    this.isLoggedIn = false;
-  }
+  ) { }
 
   ngOnInit(): void { }
 
@@ -41,22 +36,11 @@ export class LineLoginComponent implements OnInit {
   }
 
   getToken() {
-    this.isLoggedIn = true;
     // const user = this._auth.getLiffUser;
     this._tts.liff(this.user).subscribe((res: any) => {
       if (res.status == 200) {
         const token: string = res.response.jwt;
         this._auth.setToken(token);
-        this.getCredentials();
-      }
-    });
-  }
-
-  getCredentials() {
-    this._tts.checkToken().subscribe((res: any) => {
-      if (res.status == 200) {
-        const token: string = res.data[0].token;
-        this.credentials = token.replace('Bearer ', '');
       }
     });
   }

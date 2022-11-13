@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { VoiceRecognitionService } from '../services/voice-recognition.service'
+import { VoiceRecognitionService } from '../services/voice-recognition.service';
+import { TextspeechService } from '../services/textspeech.service';
 
 @Component({
   selector: 'app-main',
@@ -14,12 +15,20 @@ export class MainComponent implements OnInit {
   token: any;
 
   constructor(
-    public voiceRecognitionService: VoiceRecognitionService
+    public voiceRecognitionService: VoiceRecognitionService,
+    private _tts: TextspeechService
   ) {
     this.voiceRecognitionService.init()
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this._tts.checkToken().subscribe((res: any) => {
+      if (res.status == 200) {
+        const token: string = res.data[0].token;
+        this.token = token.replace('Bearer ', '');
+      }
+    });
+  }
 
   async testvoice() {
     this.myText = (<HTMLInputElement>document.getElementById("myText")).value;

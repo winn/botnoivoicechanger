@@ -41,6 +41,7 @@ export class AuthService {
 
   setToken(token: any) {
     sessionStorage.setItem('token', token);
+    this.router.navigate(['/main']);
   }
 
   getToken() {
