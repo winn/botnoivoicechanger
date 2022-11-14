@@ -5,7 +5,7 @@ import { TextspeechService } from '../services/textspeech.service';
 @Component({
   selector: 'app-line-login',
   templateUrl: './line-login.component.html',
-  styleUrls: ['./line-login.component.css'],
+  styleUrls: ['./line-login.component.scss'],
 })
 export class LineLoginComponent implements OnInit {
 
